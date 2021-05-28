@@ -1,0 +1,71 @@
+<html>
+    <head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+   
+   <style type="text/css">
+   #mapid { height: 100%;}
+   </style>
+        
+	<title>Carte</title>
+    </head>
+    
+	<body>
+	<div id="mapid"></div>
+    <div style="margin: 5%;">
+    </div>
+	<!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin="" ></script>
+   
+<script>
+   const successCallback = (position) =>{ console.log(position.coords.latitude,position.coords.longitude,position.coords.accuracy)};
+        const errorCallback = (error) => { console.error(error)};
+        
+        navigator.geolocation.getCurrentPosition(successCallback,errorCallback,{enableHighAccuracy: true,timeout:5000});
+
+
+    navigator.geolocation.getCurrentPosition(initMap);
+    var data = JSON.parse("{{data|escapejs}}");
+    var dataInfo = JSON.parse("{{info|escapejs}}");
+    var number = JSON.parse("{{tel|escapejs}}");
+    var nom = JSON.parse("{{nom|escapejs}}");
+  
+    function createMarker(latitude,longitude,map,z,n,nom){
+		L.marker([latitude,longitude]).addTo(map).bindPopup('Nom de medecin:'+nom+'<br>Specialiste:'+z+'<br>Numero du telephone:'+n+'<br><a href="/demende_Doct" target="_blank" title="Opens in a new window">Demender</a> ');
+	}
+     function initMap(position) {
+        
+        var mymap = L.map('mapid').setView([18.057692232222365,-16.01124241635209], 13);
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        minZoom: 10,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken:'pk.eyJ1IjoibWVkc2MiLCJhIjoiY2tubzIwZjR5MGszcDJubGFtbjA5dzlxdiJ9.yc425jRvUnlFjg6fmVL7hw'
+    
+        }).addTo(mymap);
+
+        
+        for(var x in data){
+            var y=data[x];
+            for(var z in dataInfo){
+                for(var n in number){
+                    for(var nm in nom){ 
+                        var test=z;
+                        if(x==z && x==n && x==nm){
+                            createMarker(x,y,mymap,dataInfo[z],number[n],nom[nm])
+                        }
+                    }
+                }
+            } 
+        }
+    }
+</script>
+
+    

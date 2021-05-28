@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<body>
+    <div style="width: 40%;
+    border: 1px solid black;
+    background-color: lightcyan;
+    font-family: Helvetica, sans-serif;">
+        <div style="margin: 5%;">
+            <h4 id='alldata'></h4><br>
+            <h4 id='neatdata'></h4>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    var data = JSON.parse("{{data|escapejs}}");
+    var dataNode = document.getElementById('alldata');
+    for(var x in data){
+        var y=data[x];
+        dataNode.innerHTML+=x+'  '+'   '+y+'<br><br>';
+    }
+</script>

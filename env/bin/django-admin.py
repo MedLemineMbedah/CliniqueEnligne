@@ -1,0 +1,5 @@
+#!/home/medlemine/Projet_S2/Cliinique_Enligne/env/bin/python
+from django.core import management
+
+if __name__ == "__main__":
+    management.execute_from_command_line()
